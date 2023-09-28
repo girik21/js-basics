@@ -3,6 +3,7 @@ const https = require('https');
 const fs = require('fs');
 const express = require('express');
 const app = express();
+const startUp = require('./routes/startup');
 
 // Configure the hostname and port number
 const hostname = '127.0.0.1';
@@ -15,40 +16,14 @@ const httpOptions = {
     cert: fs.readFileSync("cert.pem")
 }
 
-// Finally create a server
 const server = https.createServer(httpOptions, app);
 
-// GET for Homepage
-app.get('/', (req, res) => {
-    res.setHeader('Content-Type', 'application/json');
-    res.send('HomePage');
-});
-
-// GET for Live
-app.get('/live', (req, res) => {
-    res.send('Web Service is Live');
-});
-
-// GET for StartUp
-app.get('/startup', (req, res) => {
-    res.send('Startup Initiated');
-});
-
-// GET for Winter
-app.get('/winter', (req, res) => {
-    res.send('Winter is Coming!')
-});
-
-// GET Route with custom headers
-app.get('/set-header', (req, res) => {
-    // Set custom response headers
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Custom-Header', 'Hello from GET route');
-
-    // Send a JSON response
-    res.send({ message: 'This is a GET request' });
-});
+app.use(express.json());
+app.use('/', startUp)
 
 server.listen(port, () => {
     console.log(message);
 });
+
+
+
